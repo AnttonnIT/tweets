@@ -2,7 +2,7 @@
   "name": "tweets",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://goitacademy.github.io/tweets/",
+  "homepage": "https://anttonnit.github.io/tweets/",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
