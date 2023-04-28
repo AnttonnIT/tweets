@@ -1,5 +1,10 @@
 @import-normalize;
 
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
@@ -12,4 +17,35 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+ul,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button {
+  margin: 0;
+  padding: 0;
+}
+img,
+svg {
+  display: block;
+}
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+button {
+  cursor: pointer;
+}
+button,
+input {
+  font-family: inherit;
 }
