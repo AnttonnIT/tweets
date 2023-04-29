@@ -1,5 +1,13 @@
-import { Button } from './FollowButton.styled';
+import { StyledFollowButton } from './FollowButton.styled';
 
-export function FollowButton() {
-  return <Button type="button">Follow</Button>;
+export function FollowButton({ handleClick, following }) {
+  return (
+    <StyledFollowButton
+      type="button"
+      onClick={handleClick}
+      background={following}
+    >
+      {following ? 'Following' : 'Follow'}
+    </StyledFollowButton>
+  );
 }

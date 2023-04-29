@@ -10,21 +10,26 @@ import {
   TweetInfo,
 } from './TweetCard.styled';
 import sprite from 'img/sprite.svg';
-import { getUsers } from 'utils/api';
+
 import { FollowButton } from 'components/FollowButton/FollowButton';
 
-export function TweetCard() {
-  const [users, setUsers] = useState([]);
+export function TweetCard({ user }) {
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await getUsers();
-      setUsers(data);
-    };
-    getData();
-  }, []);
-  console.log(users);
+    const isUserFollowed = localStorage.getItem(`follow-${user.id}`);
+    setIsFollowing(!!isUserFollowed);
+  }, [user.id]);
 
+  const handleFollowClick = () => {
+    if (isFollowing) {
+      localStorage.removeItem(`follow-${user.id}`);
+      setIsFollowing(false);
+    } else {
+      localStorage.setItem(`follow-${user.id}`, true);
+      setIsFollowing(true);
+    }
+  };
   return (
     <Card>
       <CardTop>
@@ -36,22 +41,19 @@ export function TweetCard() {
       </CardTop>
       <CardBottom>
         <CardUserPhotoWrapper>
-          {users.length > 0 && (
-            <CardUserPhoto src={users[0].avatar} alt={users[0].name} />
-          )}
+          <CardUserPhoto src={user.avatar} alt={user.name} />
         </CardUserPhotoWrapper>
-        {users.length > 0 && (
-          <TweetInfo>
-            <li>
-              <p>{users[0].tweets} tweets</p>
-            </li>
-            <li>
-              <p>{users[0].followers.toLocaleString()} followers</p>
-            </li>
-          </TweetInfo>
-        )}
 
-        <FollowButton />
+        <TweetInfo>
+          <li>
+            <p>{user.tweets} tweets</p>
+          </li>
+          <li>
+            <p>{(user.followers + isFollowing).toLocaleString()} followers</p>
+          </li>
+        </TweetInfo>
+
+        <FollowButton handleClick={handleFollowClick} following={isFollowing} />
       </CardBottom>
     </Card>
   );
