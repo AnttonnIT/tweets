@@ -13,21 +13,36 @@ import sprite from 'img/sprite.svg';
 
 import { FollowButton } from 'components/FollowButton/FollowButton';
 
-export function TweetCard({ user }) {
+export function TweetCard({ user, filter }) {
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
-    const isUserFollowed = localStorage.getItem(`follow-${user.id}`);
-    setIsFollowing(!!isUserFollowed);
+    const localStorageData = JSON.parse(localStorage.getItem(`following`));
+    const isUserFollow = localStorageData?.some(
+      followingUser => followingUser.id === user.id
+    );
+    setIsFollowing(isUserFollow);
   }, [user.id]);
 
   const handleFollowClick = () => {
-    if (isFollowing) {
-      localStorage.removeItem(`follow-${user.id}`);
-      setIsFollowing(false);
-    } else {
-      localStorage.setItem(`follow-${user.id}`, true);
+    const savedUsers = JSON.parse(localStorage.getItem(`following`));
+    const isFollowingUser = savedUsers?.some(
+      followingUser => followingUser.id === user.id
+    );
+
+    if (!savedUsers) {
+      localStorage.setItem(`following`, JSON.stringify([user]));
       setIsFollowing(true);
+    } else if (!isFollowingUser) {
+      localStorage.setItem(`following`, JSON.stringify([...savedUsers, user]));
+      setIsFollowing(true);
+    } else {
+      const updatedUsers = savedUsers.filter(
+        followingUser => followingUser.id !== user.id
+      );
+
+      localStorage.setItem('following', JSON.stringify(updatedUsers));
+      setIsFollowing(false);
     }
   };
   return (

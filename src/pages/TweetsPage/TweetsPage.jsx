@@ -1,12 +1,13 @@
 import { TitleIsHidden } from 'shared/styles/SharedStyles';
 import { Section } from './TweetsPage.styled';
 import { TweetsList } from 'components/TweetsList/TweetsList';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getUsers } from 'utils/api';
 // import { Loader } from 'shared/components/Loader';
 import { LoadMoreButton } from 'components/LoadMoreButton/LoadMoreButton';
 import { limit } from 'refs/constants';
 import { GoBackButton } from 'components/GoBackButton/GoBackButton';
+// import { useLocalStorage } from 'hooks/useLocalStorage';
 
 export default function TweetsPage() {
   const [users, setUsers] = useState([]);
@@ -14,9 +15,13 @@ export default function TweetsPage() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filter, setFilter] = useState('show all');
-
+  // const [followings, setFollowings] = useState(() =>
+  //   JSON.parse(localStorage.getItem(`following`))
+  // );
+  // console.log(followings);
   useEffect(() => {
     if (!hasMore) return;
+
     const getData = async () => {
       try {
         setLoading(true);
@@ -42,17 +47,21 @@ export default function TweetsPage() {
     setFilter(e.target.value);
   };
 
-  // const filteredUsers = useMemo(() => {
-  //   if (filter === 'show all') {
-  //     return users;
-  //   } else if (filter === 'follow') {
-  //     return users.filter(user => user.follow);
-  //   } else if (filter === 'followings') {
-  //     const followingIds =
-  //       JSON.parse(localStorage.getItem('followingIds')) || [];
-  //     return users.filter(user => followingIds.includes(user.id));
-  //   }
-  // }, [users, filter]);
+  const filteredUsers = useMemo(() => {
+    const savedUsers = JSON.parse(localStorage.getItem(`following`));
+
+    if (filter === 'show all') {
+      return users;
+    } else if (filter === 'follow') {
+      const uniqueArray = users.filter(user => {
+        return !savedUsers.some(savedUser => savedUser.id === user.id);
+      });
+
+      return uniqueArray;
+    } else if (filter === 'followings') {
+      return savedUsers;
+    }
+  }, [filter, users]);
 
   return (
     <main>
@@ -73,8 +82,8 @@ export default function TweetsPage() {
             </select>
           </label>
         </div>
-        <TweetsList users={users} />
-        {hasMore && (
+        <TweetsList users={filteredUsers} filter={filter} />
+        {hasMore && filter !== 'followings' && (
           <LoadMoreButton
             onClick={handleClickLoadMoreButton}
             isLoading={loading}
