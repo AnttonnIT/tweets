@@ -7,7 +7,7 @@ export default function HomePage() {
       <Container>
         <StyledTitle>Welcome to our tweets app!</StyledTitle>
         <Text>
-          Welcome to our user card page! Follow and unfollow other users and see
+          Welcome to our tweets app! Follow and unfollow other users and see
           their follower count. Our cards have two states: Follow and Following.
           Click Follow to increase the follower count by one and change the
           button color and text to Following. Refreshing the page will retain
