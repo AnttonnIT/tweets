@@ -15,10 +15,27 @@ export default function TweetsPage() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filter, setFilter] = useState('show all');
-  // const [followings, setFollowings] = useState(() =>
-  //   JSON.parse(localStorage.getItem(`following`))
-  // );
+  // const [followings, setFollowings] = useState([]);
   // console.log(followings);
+  // useEffect(() => {
+  //   const savedFollowings = JSON.parse(localStorage.getItem('following'));
+  //   if (savedFollowings) {
+  //     setFollowings(savedFollowings);
+  //   }
+
+  //   const handleStorageChange = event => {
+  //     if (event.key === 'following') {
+  //       const newFollowings = JSON.parse(event.newValue);
+  //       setFollowings(newFollowings || []);
+  //     }
+  //   };
+
+  //   window.addEventListener('storage', handleStorageChange);
+
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, []);
   useEffect(() => {
     if (!hasMore) return;
 
@@ -64,32 +81,30 @@ export default function TweetsPage() {
   }, [filter, users]);
 
   return (
-    <main>
-      <Section>
-        <TitleIsHidden>TweetsPage</TitleIsHidden>
-        <GoBackButton />
-        <div>
-          <label>
-            Filter:
-            <select
-              id="filter-select"
-              value={filter}
-              onChange={handleFilterChange}
-            >
-              <option value="show all">Show all</option>
-              <option value="follow">Follow</option>
-              <option value="followings">Followings</option>
-            </select>
-          </label>
-        </div>
-        <TweetsList users={filteredUsers} filter={filter} />
-        {hasMore && filter !== 'followings' && (
-          <LoadMoreButton
-            onClick={handleClickLoadMoreButton}
-            isLoading={loading}
-          />
-        )}
-      </Section>
-    </main>
+    <Section>
+      <TitleIsHidden>TweetsPage</TitleIsHidden>
+      <GoBackButton />
+      <div>
+        <label>
+          Filter:
+          <select
+            id="filter-select"
+            value={filter}
+            onChange={handleFilterChange}
+          >
+            <option value="show all">Show all</option>
+            <option value="follow">Follow</option>
+            <option value="followings">Followings</option>
+          </select>
+        </label>
+      </div>
+      <TweetsList users={filteredUsers} filter={filter} />
+      {hasMore && filter !== 'followings' && (
+        <LoadMoreButton
+          onClick={handleClickLoadMoreButton}
+          isLoading={loading}
+        />
+      )}
+    </Section>
   );
 }
