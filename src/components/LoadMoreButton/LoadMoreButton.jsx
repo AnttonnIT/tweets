@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { StyledLoadMoreBtn } from './LoadMoreButton.styled';
 
 export function LoadMoreButton({ onClick, isLoading }) {
@@ -7,3 +8,8 @@ export function LoadMoreButton({ onClick, isLoading }) {
     </StyledLoadMoreBtn>
   );
 }
+
+LoadMoreButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};

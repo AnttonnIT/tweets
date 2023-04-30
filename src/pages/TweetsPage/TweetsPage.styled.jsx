@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 
-export const Section = styled.section`
-  max-width: 1440px;
-  margin: 0 auto;
+export const WrapperBtnFilter = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  padding: 20px 75px;
 `;

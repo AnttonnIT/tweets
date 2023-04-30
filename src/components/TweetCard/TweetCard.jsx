@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Card,
   CardBottom,
@@ -10,41 +10,14 @@ import {
   TweetInfo,
 } from './TweetCard.styled';
 import sprite from 'img/sprite.svg';
-
 import { FollowButton } from 'components/FollowButton/FollowButton';
+import { useFollowingUsers } from 'hooks/useFollowUser';
 
-export function TweetCard({ user, filter }) {
-  const [isFollowing, setIsFollowing] = useState(false);
+export function TweetCard({ user, onClick }) {
+  const { isFollowing, handleFollowClick } = useFollowingUsers(user);
 
-  useEffect(() => {
-    const localStorageData = JSON.parse(localStorage.getItem(`following`));
-    const isUserFollow = localStorageData?.some(
-      followingUser => followingUser.id === user.id
-    );
-    setIsFollowing(isUserFollow);
-  }, [user.id]);
+  const { avatar, name, tweets, followers } = user;
 
-  const handleFollowClick = () => {
-    const savedUsers = JSON.parse(localStorage.getItem(`following`));
-    const isFollowingUser = savedUsers?.some(
-      followingUser => followingUser.id === user.id
-    );
-
-    if (!savedUsers) {
-      localStorage.setItem(`following`, JSON.stringify([user]));
-      setIsFollowing(true);
-    } else if (!isFollowingUser) {
-      localStorage.setItem(`following`, JSON.stringify([...savedUsers, user]));
-      setIsFollowing(true);
-    } else {
-      const updatedUsers = savedUsers.filter(
-        followingUser => followingUser.id !== user.id
-      );
-
-      localStorage.setItem('following', JSON.stringify(updatedUsers));
-      setIsFollowing(false);
-    }
-  };
   return (
     <Card>
       <CardTop>
@@ -56,20 +29,34 @@ export function TweetCard({ user, filter }) {
       </CardTop>
       <CardBottom>
         <CardUserPhotoWrapper>
-          <CardUserPhoto src={user.avatar} alt={user.name} />
+          <CardUserPhoto src={avatar} alt={name} />
         </CardUserPhotoWrapper>
 
         <TweetInfo>
           <li>
-            <p>{user.tweets} tweets</p>
+            <p>{tweets} tweets</p>
           </li>
           <li>
-            <p>{(user.followers + isFollowing).toLocaleString()} followers</p>
+            <p>{(followers + isFollowing).toLocaleString()} followers</p>
           </li>
         </TweetInfo>
 
-        <FollowButton handleClick={handleFollowClick} following={isFollowing} />
+        <FollowButton
+          handleClick={handleFollowClick}
+          onClick={onClick}
+          following={isFollowing}
+        />
       </CardBottom>
     </Card>
   );
 }
+
+TweetCard.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    avatar: PropTypes.string,
+    tweets: PropTypes.number.isRequired,
+    followers: PropTypes.number.isRequired,
+  }),
+};
